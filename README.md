@@ -22,4 +22,4 @@ Content detection of the Polar Dataset
 28 -  
 29 -  
 
-Due March 1, 2016
+Due March 3, 2016
