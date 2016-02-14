@@ -1,0 +1,36 @@
+Agenda:
+- Background in other frameworks
+- What is R
+- Going Pro
+
+Visualizations
+- Histogram !
+- Line plot over time !
+- Pie Chart !
+- BoxPlot
+- Scatter Plot- Trend lines
+- Bar Graph
+- Stem and Leaf
+- Radar Plot
+- 3D Visualization (Scatter)
+- Mapping and Geographics
+- Parallel Coordinates
+
+
+Functions
+- Add new columns, rename columns
+
+=====================
+
+What is possible with R on basic functionality?
+Comparison with other applications?
+GUIs and Frontends (Shiny)
+Packages
+Can I be an effective coder? YES
+What is code? Coding? Command line?
+
+brian.cohn@usc.edu
+
+
+
+
