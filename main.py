@@ -1,6 +1,9 @@
+import pandas as pd
+import numpy as np
+
 def main():
   polar_data = download_s3_data_from_polar()
-  file_freq = byte_frequency_analysis(one_file_path)
+  file_freq = byte_frequency_analysis("samplefile.txt")
   byte_frequency_distribution_correlation()
   byte_frequency_cross_correlation()
   file_header_trailer()
@@ -39,4 +42,7 @@ def byte_frequency_cross_correlation(path_to_file,fingerprint_array):
 def file_header_trailer(path_to_file,bytes_to_analyze):
   return 0
 
+def download_s3_data_from_polar():
+  return(0)
 
+main()
