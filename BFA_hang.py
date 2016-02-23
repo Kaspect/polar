@@ -20,38 +20,48 @@ args = parser.parse_args()
 if args.help:
     print "This program takes in a file list containing full paths of certain type of files as argument and output an unified average byte frequency of all the file in file list"
     print "One sample row for the file list is: 160/201/178/155/C5402A255D63ED25FD81A0D9093C70B571D2FE2D3D0875BBA37AE674FD14D1EB"
-    print "An example call to the scrtip it: python BFA_hang.py --file_list_path ./test_list --output test_out.signature which generate the byte freq signature test_out.signature for file listed in test_list"
+    print "An example call to the scrtip: python BFA_hang.py --file_list_path ./test_list --output test_out.signature which generate the byte freq signature test_out.signature for file listed in test_list"
     sys.exit()
 
+#Function:Count the avarge occurance of byte 0~255 in all the files contained in the inputted list 
+#	  Average_occunrace=total_occurance/file_count
+#Input:Full path of a list containing all data files of certain MIME type
+#Output:256 element python list containing the average occurance count of byte 0~255 in those files (occurance of byte x can be retrived as list[x])
+def count_avg_byte_occurance(file_list_path):
+	file_list_fd=open(file_list_path,'r')
+	file_count=0
+	abolist=[0]*256	
+	for line in file_list_fd:
+        	try:
+                	if int(args.debug)==1:
+                        	print "Current line in file list="+str(line)+"\n"
+                	f = open(str(line).strip(),'rb')
+                	byte=f.read(1)
+                	while byte != "":
+                        	abolist[ord(byte)]+=1
+                        	byte=f.read(1)
+        	except:
+                	print "Failed to finish parsing file "+str(line)+"\n"
+                	f.close()
+                	continue
+        	file_count+=1
+        	f.close()
+	abolist[:]=[x/file_count*1.0 for x in abolist]
+	file_list_fd.close()
+	return abolist
+
+#Function: convert a list containing averge byte occurance to a list containing byte freq
+def abo2bf(abolist):
+	max_bl=max(abolist)
+	abolist[:]=[x/max_bl*1.0 for x in abolist]
+	return abolist
+
+	 
 flp=args.file_list_path
-file_list_fd=open(flp,'r')
 out_fd=open(str(args.output_file_name),'w')
-file_count=0
-bytelist=[0]*256
-
-for line in file_list_fd:
-	try:
-		if int(args.debug)==1:
-			print "Current line in file list="+str(line)+"\n"
-		f = open(str(line).strip(),'rb')
-		byte=f.read(1)
-		while byte != "":
-			bytelist[ord(byte)]+=1
-			byte=f.read(1)
-	except:
-		print "Failed to finish parsing file "+str(line)+"\n"
-		f.close()
-		continue
-	file_count+=1
-	f.close()
-
-bytelist[:]=[x/file_count*1.0 for x in bytelist]
-max_bl=max(bytelist)
-bytelist[:]=[x/max_bl*1.0 for x in bytelist]
-out_fd.write("\n".join(map(str,bytelist)))
-
+abolist=count_avg_byte_occurance(flp)#abolist is a list containing average bype occurance
+bflist=abo2bf(abolist) #bflist is a list containing byte freq
+out_fd.write("\n".join(map(str,bflist)))
+out_fd.close()
 if int(args.debug)==1:
 	print "file_count="+str(file_count)+"\n"
-	print "max in bytelist="+str(bytelist)+"\n"
-file_list_fd.close()
-out_fd.close()
