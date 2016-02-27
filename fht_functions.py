@@ -17,8 +17,18 @@ def test_file_list():
                 "test_img_files/IMG_1310.jpg",
                 "test_img_files/IMG_1311.jpg",
                 "test_img_files/IMG_1312.jpg",
-                "test_img_files/IMG_1313.jpg"]
+                "test_img_files/IMG_1313.jpg",
+                "test_img_files/one_byte.jpg",
+                "test_img_files/five_bytes.jpg",
+                "test_img_files/nine_bytes.jpg",
+                "test_img_files/eighteen_bytes.jpg"]
                 )
+
+def gen_expected_distribution_for_one_byte_b():
+            neg1_list = np.ones(256)*-1
+            mat = np.vstack([np.zeros(256), neg1_list,neg1_list,neg1_list])
+            mat[0,98] = 1
+            return(mat)
 
 def bytes_from_file(filename, chunksize=8192):
     with open(filename, "rb") as f:
@@ -73,8 +83,17 @@ def build_FHT_header_matrix(filename, first_n_bytes):
     for byte_value in file_header_bytes:
         header_matrix[counter,byte_value] = 1
         counter += 1
+    header_matrix = plug_in_negative_numbers_if_file_is_shorter_than_header_len(filename, first_n_bytes, header_matrix)
     return(header_matrix)
 
+def plug_in_negative_numbers_if_file_is_shorter_than_header_len(filename,first_n_bytes,header_matrix):
+    if len(bytes(filename)) >= first_n_bytes:
+        return(header_matrix)
+    else:
+        index_of_last_bit_position_in_file = len(bytes(filename))
+        for i in range(index_of_last_bit_position_in_file, first_n_bytes):
+            header_matrix[i] = np.ones(256)*-1
+        return(header_matrix)
 
 # def concatenate_FHT_matrices(matrix1, matrix2):
 
@@ -121,11 +140,18 @@ class TestUM(unittest.TestCase):
         concatenated_matrix = concatenate_FP_matrices(building_pic_matrix, stairs_pic_matrix, 1)
         np.testing.assert_array_equal(concatenated_matrix, building_pic_matrix)
 
+
+    def test_concatenate_FP_matrices_for_short_ones(self):
+        just_the_letter_b_jpg_matrix = build_FHT_header_matrix("test_img_files/one_byte.jpg",4)
+        np.testing.assert_array_equal(just_the_letter_b_jpg_matrix, gen_expected_distribution_for_one_byte_b())
+        brian_jpg_matrix = build_FHT_header_matrix("test_img_files/five_bytes.jpg",4)
+        # I start the previous number files at one because there 
+        # were no images before I added the building pic
+        concatenated_matrix = concatenate_FP_matrices(just_the_letter_b_jpg_matrix, brian_jpg_matrix, 1)
+        return(concatenated_matrix)
+
     def test_concatentate_FP_matrix_from_filelist(self):
         res1 = concatentate_FP_matrix_from_filelist(test_file_list(), 4)
- 
-    # def test_strings_a_3(self):
-    #     self.assertEqual( multiply('a',3), 'aaa')
  
 if __name__ == '__main__':
     unittest.main()
