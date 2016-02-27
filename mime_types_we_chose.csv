@@ -1,16 +1,16 @@
-frequency, mime_type
-676847, text/html
-277210, application/xhtml+xml
-95784, application/octet-stream 
-92497, text/plain
-77512, image/jpeg 
-37711, application/pdf 
-33709, image/gif 
-31294, image/png 
-6574, application/rss+xml 
-5637, application/xml 
-2907, application/dif+xml 
-2409, application/atom+xml 
-1345, image/vnd.microsoft.icon 
-1240, application/gzip 
-927, application/rdf+xml 
+"","frequency","mime_type","seventy_five_percent_sample_num"
+"1",676847," text/html",507636
+"2",277210," application/xhtml+xml",207908
+"3",95784," application/octet-stream ",23946
+"4",92497," text/plain",69373
+"5",77512," image/jpeg ",58134
+"6",37711," application/pdf ",28284
+"7",33709," image/gif ",25282
+"8",31294," image/png ",23471
+"9",6574," application/rss+xml ",4931
+"10",5637," application/xml ",4228
+"11",2907," application/dif+xml ",2181
+"12",2409," application/atom+xml ",1807
+"13",1345," image/vnd.microsoft.icon ",1009
+"14",1240," application/gzip ",930
+"15",927," application/rdf+xml ",696
