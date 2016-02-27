@@ -8,11 +8,12 @@
 # Created:     2/19/2016
 #-------------------------------------------------------------------------------
 
-import sys, argparse
+import sys, argparse,json
 
 parser = argparse.ArgumentParser(add_help=False)
 parser.add_argument("--help", help="Sample input and output", action='store_true')
 parser.add_argument("--debug", help="set 1 to turn on debugging mode", default=0) 
+parser.add_argument("--MIME_type", help="mime type we're generateing output against", default="default_mime_type")
 parser.add_argument("--file_list_path", help="the path for the file list of certain MIME Type", default="default_file_list") 
 parser.add_argument("--output_file_name", help="output file name", default="default_out.signature")
 args = parser.parse_args()
@@ -20,14 +21,14 @@ args = parser.parse_args()
 if args.help:
     print "This program takes in a file list containing full paths of certain type of files as argument and output an unified average byte frequency of all the file in file list"
     print "One sample row for the file list is: 160/201/178/155/C5402A255D63ED25FD81A0D9093C70B571D2FE2D3D0875BBA37AE674FD14D1EB"
-    print "An example call to the script: python BFA_hang.py --file_list_path ./test_list --output test_out.signature which generate the byte freq signature test_out.signature for file listed in test_list"
+    print "An example call to the scrtip: python BFA_hang.py --file_list_path ./test_list --output test_out.signature which generate the byte freq signature test_out.signature for file listed in test_list"
     sys.exit()
 
-#Function:Count the average occurance of byte 0~255 in all the files contained in the inputted list 
-#	  Average_occurance=total_occurance/file_count
+#Function:Count the avarge occurance of byte 0~255 in all the files contained in the inputted list 
+#	  Average_occunrace=total_occurance/file_count
 #Input:Full path of a list containing all data files of certain MIME type
 #Output:256 element python list containing the average occurance count of byte 0~255 in those files (occurance of byte x can be retrived as list[x])
-def count_average_byte_occurance(file_list_path):
+def count_avg_byte_occurance(file_list_path):
 	file_list_fd=open(file_list_path,'r')
 	file_count=0
 	abolist=[0]*256	
@@ -51,17 +52,33 @@ def count_average_byte_occurance(file_list_path):
 	return abolist
 
 #Function: convert a list containing averge byte occurance to a list containing byte freq
-def occurrence_to_byte_frequency(abolist):
+def abo2bf(abolist):
 	max_bl=max(abolist)
 	abolist[:]=[x/max_bl*1.0 for x in abolist]
 	return abolist
 
+#Function: convert a byte freq list to a string of json format like shown below:
+#[ { "name": "Application_Pdf",  "data":[ { "byte": 0, "bytefreq": 0.1 },{ "byte": 1, "bytefreq": 0.2}, {"byte": 2,"bytefreq": 0.3} ] } ]
+#Input: bflist is byte freq list; typename is a string for the MIME type
+#output: a json string
+def bflist2json(bflist, typename):
+	jsonstring="[ {  \"name\": \""+str(typename)+"\",  \"data\":[ "
+        for i in range(256):
+		datastring="{ \"byte\": "+str(i)+", \"bytefreq\": "+str(bflist[i])+" }"
+		if i != 255:
+			jsonstring=jsonstring+datastring+","
+		else:
+			jsonstring=jsonstring+datastring
+	jsonstring=jsonstring+"] }   ]"
+	return jsonstring	
 	 
 flp=args.file_list_path
 out_fd=open(str(args.output_file_name),'w')
-abolist=count_average_byte_occurance(flp)#abolist is a list containing average bype occurance
-bflist=occurrence_to_byte_frequency(abolist) #bflist is a list containing byte freq
-out_fd.write("\n".join(map(str,bflist)))
+abolist=count_avg_byte_occurance(flp)#abolist is a list containing average bype occurance
+bflist=abo2bf(abolist) #bflist is a list containing byte freq
+#out_fd.write("\n".join(map(str,bflist)))
+jsonstring=bflist2json(bflist,str(args.MIME_type))
+out_fd.write(str(jsonstring))
 out_fd.close()
 if int(args.debug)==1:
 	print "file_count="+str(file_count)+"\n"
