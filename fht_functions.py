@@ -1,3 +1,7 @@
+#TODO implement the matrix generation for the footer work.
+#TODO run on the whole dataset.
+
+
 import ipdb
 import numpy as np
 import matplotlib.pyplot as plt
