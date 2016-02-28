@@ -1,6 +1,6 @@
 #!/usr/bin/evn python
 #-------------------------------------------------------------------------------
-# Name:        BFA_hang
+# Name:_        BFA_hang
 # Purpose:     Generate BFA signature for certain file type 
 #
 # Author:      Hang Guo
@@ -21,7 +21,7 @@ args = parser.parse_args()
 if args.help:
     print "This program takes in a file list containing full paths of certain type of files as argument and output an unified average byte frequency of all the file in file list"
     print "One sample row for the file list is: 160/201/178/155/C5402A255D63ED25FD81A0D9093C70B571D2FE2D3D0875BBA37AE674FD14D1EB"
-    print "An example call to the scrtip: python BFA_hang.py --file_list_path ./test_list --output test_out.signature which generate the byte freq signature test_out.signature for file listed in test_list"
+    print "An example call to the scrtip: python BFA_hang.py --file_list_path ./test_list --output test_out_signature --MIME_type some_type which generate the byte freq signature test_out_signature.json and test_out_signature.text for file listed in test_list"
     sys.exit()
 
 #Function:Count the avarge occurance of byte 0~255 in all the files contained in the inputted list 
@@ -73,12 +73,14 @@ def bflist2json(bflist, typename):
 	return jsonstring	
 	 
 flp=args.file_list_path
-out_fd=open(str(args.output_file_name),'w')
+out_fd_json=open(str(args.output_file_name)+".json",'w')
+out_fd_txt=open(str(args.output_file_name)+".txt",'w')
 abolist=count_avg_byte_occurance(flp)#abolist is a list containing average bype occurance
 bflist=abo2bf(abolist) #bflist is a list containing byte freq
-#out_fd.write("\n".join(map(str,bflist)))
 jsonstring=bflist2json(bflist,str(args.MIME_type))
-out_fd.write(str(jsonstring))
-out_fd.close()
+out_fd_json.write(str(jsonstring))
+out_fd_txt.write("\n".join(map(str,bflist)))
+out_fd_json.close()
+out_fd_txt.close()
 if int(args.debug)==1:
 	print "file_count="+str(file_count)+"\n"
