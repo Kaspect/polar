@@ -1,4 +1,6 @@
 import os
+import csv
+import sys
 
 def changeToPresentDirectory():
     os.chdir(os.path.abspath(os.path.dirname(__file__)))
@@ -21,7 +23,16 @@ os.chdir(os.getcwd())
 
 byteValue = 0
 with open('byteCount.tsv','w') as fileOutput:
-    fileOutput.write('Byte     Frequency\n' )
+    fileOutput.write('Byte, Frequency\n' )
     for frequency in readFile("/Users/dhruvbhatia/Desktop/Dhruv_Resume.pdf"):
-        fileOutput.write('Byte '+str(byteValue) + ' : ' + str(frequency)+'\n')
+        fileOutput.write(str(byteValue)+ ',' + str(frequency)+'\n')
         byteValue +=1
+# read tab-delimited file
+with open('byteCount.tsv','rb') as f:
+    cr = csv.reader(f)
+    filecontents = [line for line in cr]
+
+# write comma-delimited file (comma is the default delimiter)
+with open('byteCount.csv','wb') as fo:
+    cw = csv.writer(fo, quotechar='', quoting=csv.QUOTE_NONE, escapechar='\\')
+    cw.writerows(filecontents)

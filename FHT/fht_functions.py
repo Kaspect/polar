@@ -29,10 +29,14 @@ def test_file_list():
                 )
 
 def gen_expected_distribution_for_one_byte_b():
-            neg1_list = np.ones(256)*-1
-            mat = np.vstack([np.zeros(256), neg1_list,neg1_list,neg1_list])
-            mat[0,98] = 1
-            return(mat)
+    neg1_list = np.ones(256)*-1
+    mat = np.vstack([np.zeros(256), neg1_list,neg1_list,neg1_list])
+    mat[0,98] = 1
+    return(mat)
+def gen_expected_matrix_for_two_short_files():
+    neghalflist = np.ones(256)*-0.5
+    mat = np.vstack([np.zeros(256), neghalflist,neghalflist,neghalflist])
+    return(mat)
 
 def bytes_from_file(filename, chunksize=8192):
     with open(filename, "rb") as f:
@@ -130,6 +134,7 @@ class TestUM(unittest.TestCase):
  
     def setUp(self):
         pass
+
     def test_build_FHT_header_matrix_size_is_correct(self):
         self.assertEqual(build_FHT_header_matrix("test_img_files/IMG_1305.jpg",4).shape, (4, 256))
         self.assertEqual(build_FHT_header_matrix("test_img_files/IMG_1305.jpg",8).shape, (8, 256))
@@ -145,7 +150,7 @@ class TestUM(unittest.TestCase):
         np.testing.assert_array_equal(concatenated_matrix, building_pic_matrix)
 
 
-    def test_concatenate_FP_matrices_for_short_ones(self):
+    def test_concatenate_FP_matrices_for_short_ones_for_errors(self):
         just_the_letter_b_jpg_matrix = build_FHT_header_matrix("test_img_files/one_byte.jpg",4)
         np.testing.assert_array_equal(just_the_letter_b_jpg_matrix, gen_expected_distribution_for_one_byte_b())
         brian_jpg_matrix = build_FHT_header_matrix("test_img_files/five_bytes.jpg",4)

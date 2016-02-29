@@ -62,7 +62,7 @@ def get_byte_count_from_s3_path(s3_path):
 		byte=f.read(1)
 
 #Function: convert a list containing averge byte occurance to a list containing byte freq
-def abo2bf(abolist):
+def average_byte_occurrence_to_byte_frequency(abolist):
 	max_bl=max(abolist)
 	abolist[:]=[x/max_bl*1.0 for x in abolist]
 	return abolist
@@ -81,16 +81,53 @@ def bflist2json(bflist, typename):
 			jsonstring=jsonstring+datastring
 	jsonstring=jsonstring+"] }   ]"
 	return jsonstring	
-	 
-flp=args.file_list_path
+
+def get_json_byte_frequency_string_from_filelist(file_list_path, MIME_type):
+	flp=args.file_list_path
+	average_byte_occurence_list=count_avg_byte_occurance(flp)#average_byte_occurence_list is a list containing average bype occurance
+	byte_frequency_list=average_byte_occurrence_to_byte_frequency(average_byte_occurence_list) #byte_frequency_list is a list containing byte freq
+	jsonstring=byte_frequency_list2json(byte_frequency_list,str(MIME_type))
+	return(jsonstring)
+
+get_json_byte_frequency_string_from_filelist(args.file_list_path, args.MIME_type)
+
+#create a json file and save to it
 out_fd_json=open(str(args.output_file_name)+".json",'w')
-out_fd_txt=open(str(args.output_file_name)+".txt",'w')
-abolist=count_avg_byte_occurance(flp)#abolist is a list containing average bype occurance
-bflist=abo2bf(abolist) #bflist is a list containing byte freq
-jsonstring=bflist2json(bflist,str(args.MIME_type))
 out_fd_json.write(str(jsonstring))
-out_fd_txt.write("\n".join(map(str,bflist)))
+#create a txt file and save to it
+out_fd_txt=open(str(args.output_file_name)+".txt",'w')
+out_fd_txt.write("\n".join(map(str,byte_frequency_list)))
 out_fd_json.close()
 out_fd_txt.close()
 if int(args.debug)==1:
 	print "file_count="+str(file_count)+"\n"
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
