@@ -51,6 +51,16 @@ def count_avg_byte_occurance(file_list_path):
 	file_list_fd.close()
 	return abolist
 
+def get_byte_count_from_s3_path(s3_path):
+	byte_count_list=[0]*256
+	f = open(str(s3_path).strip(),'rb') #not sure what exactly file open conmmand is used for opening remote s3 file
+                                            #rb means read in byte mode 
+				            #strip() get rid of leading/trailing space -- hang
+	byte=f.read(1)
+	while byte != "":
+		byte_count_list[ord(byte)]+=1
+		byte=f.read(1)
+
 #Function: convert a list containing averge byte occurance to a list containing byte freq
 def abo2bf(abolist):
 	max_bl=max(abolist)
