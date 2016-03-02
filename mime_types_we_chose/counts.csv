@@ -1,0 +1,16 @@
+frequency,mime_type,seventy_five_percent_sample_num
+676847, text/html,507636
+277210, application/xhtml+xml,207908
+95784, application/octet-stream ,23946
+92497, text/plain,69373
+77512, image/jpeg ,58134
+37711, application/pdf ,28284
+33709, image/gif ,25282
+31294, image/png ,23471
+6574, application/rss+xml ,4931
+5637, application/xml ,4228
+2907, application/dif+xml ,2181
+2409, application/atom+xml ,1807
+1345, image/vnd.microsoft.icon ,1009
+1240, application/gzip ,930
+927, application/rdf+xml ,696
