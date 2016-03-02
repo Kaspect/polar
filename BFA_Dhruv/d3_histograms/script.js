@@ -1,5 +1,5 @@
 // Get pre-computed histogram data
-d3.json("data.json", function(json) {
+d3.json("../../15type_signature_json/conglomerate_15_types_bfa_distributions.json", function(json) {
   
   var maxBin = 400;
   var binInc = 1;
