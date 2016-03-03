@@ -50,7 +50,7 @@ def bytes_from_file(filename, chunksize=8192):
 			else:
 				break
 
-def bytes(filename, num_bytes_to_collect=999999999999999999):
+def bytes(filename, num_bytes_to_collect):
 	L = []
 	bytes_recorded_so_far=0
 	for b in bytes_from_file(filename):
@@ -59,6 +59,10 @@ def bytes(filename, num_bytes_to_collect=999999999999999999):
 		if bytes_recorded_so_far == num_bytes_to_collect:
 			break
 	return(L)
+
+#returns just an integer of the num bytes in a file
+def get_length_of_file_in_bytes(filename):
+	return(sum([1 for b in bytes_from_file(filename)]))
 
 def bytes_backwards(filename, num_bytes_to_collect):
 	L = []
@@ -112,12 +116,11 @@ def extract_first_n_elements(n, L):
 	return(L[0:n])
 
 def extract_n_header_bytes_from_file(filename, number_of_bytes):
-	header_bytes = extract_first_n_elements(number_of_bytes, bytes(filename))
+	header_bytes = bytes(filename, number_of_bytes)
 	return(header_bytes)
 
 def extract_n_footer_bytes_from_file(filename, number_of_bytes):
-	reversed_bytes = bytes(filename)[::-1] #Reverse the bytes so we can reuse the 
-	footer_bytes = extract_first_n_elements(number_of_bytes, reversed_bytes)
+	footer_bytes = bytes_backwards(filename, number_of_bytes) #Reverse the bytes so we can reuse the 
 	return(footer_bytes)
 
 def n_byte_headers_for_each_file(list_of_filenames, number_of_bytes):
@@ -144,10 +147,10 @@ def build_FHT_header_matrix(filename, first_n_bytes):
 	return(header_matrix)
 
 def plug_in_negative_numbers_if_file_is_shorter_than_header_len(filename,first_n_bytes,header_matrix):
-	if len(bytes(filename)) >= first_n_bytes:
+	if get_length_of_file_in_bytes(filename) >= first_n_bytes:
 		return(header_matrix)
 	else:
-		index_of_last_bit_position_in_file = len(bytes(filename))
+		index_of_last_bit_position_in_file = get_length_of_file_in_bytes(filename)
 		for i in range(index_of_last_bit_position_in_file, first_n_bytes):
 			header_matrix[i] = np.ones(256)*-1
 		return(header_matrix)
@@ -248,4 +251,4 @@ def read_first_n_bytes(filename, num_bytes):
 if __name__ == '__main__':
 	# unittest.main()
 	#replace test_file_list with a list of the files. strings
-	run_header_and_footer("jpg", test_file_list()[0:2], bytes_to_check = [4,8,16] )
+	run_header_and_footer("jpg", test_file_list(), bytes_to_check = [4,8,16] )
