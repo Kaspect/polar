@@ -222,21 +222,11 @@ def run_header_and_footer(type_name, list_of_filenames, bytes_to_check):
 	header_FHT_filename_out = type_name + "_header_FHT"
 	footer_FHT_filename_out = type_name + "_footer_FHT"
 	#generate output files into those filenames
-	generate_csv_FHT_matrix(list_of_filenames, header_or_footer="header", filename_out = header_FHT_filename_out, bytes_to_check=bytes_to_check)
-	generate_csv_FHT_matrix(list_of_filenames, header_or_footer="footer", filename_out = footer_FHT_filename_out, bytes_to_check=bytes_to_check)
-
-def generate_csv_FHT_matrix(list_of_filenames, header_or_footer, filename_out, bytes_to_check):
-	if header_or_footer=="header":
-		save_csv_for_each_byte_len(list_of_filenames, filename_out, bytes_to_check)
-	elif header_or_footer=="footer":
-		#TODO implement footer RUN
-		pass
-		# save_csv_for_each_byte_len(list_of_filenames, filename_out, bytes_to_check)
-	else:
-		print(1)
+	save_csv_for_each_byte_len(list_of_filenames, filename_out = header_FHT_filename_out, header_or_footer="header", bytes_to_check=bytes_to_check)
+	save_csv_for_each_byte_len(list_of_filenames, filename_out = footer_FHT_filename_out, header_or_footer="footer", bytes_to_check=bytes_to_check)
 
 
-def save_csv_for_each_byte_len(list_of_filenames, filename_out, bytes_to_check):
+def save_csv_for_each_byte_len(list_of_filenames, filename_out, bytes_to_check, header_or_footer):
 	for i in bytes_to_check:
 		filename_with_bytes = filename_out + "bytelen" + str(i) + ".csv"
 		print("Working on: " + filename_with_bytes)
