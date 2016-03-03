@@ -65,51 +65,8 @@ def get_length_of_file_in_bytes(filename):
 	return(sum([1 for b in bytes_from_file(filename)]))
 
 def bytes_backwards(filename, num_bytes_to_collect):
-	L = []
-	bytes_recorded_so_far=0
-	for b in reverse_readline(filename):
-		L += [b]
-		bytes_recorded_so_far += 1
-		if bytes_recorded_so_far == num_bytes_to_collect:
-			break
-	return(L)
-
-
-# via http://stackoverflow.com/questions/2301789/read-a-file-in-reverse-order-using-python
-def reverse_readline(filename, buf_size=8192):
-    """a generator that returns the lines of a file in reverse order"""
-    with open(filename) as fh:
-        segment = None
-        offset = 0
-        file_size = fh.seek(0, os.SEEK_END)
-        total_size = remaining_size = fh.tell()
-        while remaining_size > 0:
-            offset = min(total_size, offset + buf_size)
-            fh.seek(file_size - offset)
-            buffer = fh.read(min(remaining_size, buf_size))
-            remaining_size -= buf_size
-            lines = buffer.split('\n')
-            # the first line of the buffer is probably not a complete line so
-            # we'll save it and append it to the last line of the next buffer
-            # we read
-            if segment is not None:
-                # if the previous chunk starts right from the beginning of line
-                # do not concact the segment to the last line of new chunk
-                # instead, yield the segment first 
-                if buffer[-1] is not '\n':
-                    lines[-1] += segment
-                else:
-                    yield segment
-            segment = lines[0]
-            for index in range(len(lines) - 1, 0, -1):
-                if len(lines[index]):
-                    yield lines[index]
-        # Don't yield None if the file was empty
-        if segment is not None:
-            yield segment
-
-
-
+	testdata = range(num_bytes_to_collect)
+	return(testdata)
 
 
 def extract_first_n_elements(n, L):
@@ -140,14 +97,14 @@ def build_FHT_header_matrix(filename, first_n_bytes):
 
 def build_FHT_footer_matrix(filename, first_n_bytes):
 	#Instantiated the matrix of zeros
-	header_matrix =  zero_matrix_for_FHT(first_n_bytes)
+	footer_matrix =  zero_matrix_for_FHT(first_n_bytes)
 	#Grab the file header bytes
 	file_footer_bytes = extract_n_footer_bytes_from_file(filename,first_n_bytes)
 	counter = 0
 	for byte_value in file_footer_bytes:
 		footer_matrix[counter,byte_value] = 1
 		counter += 1
-	footer_matrix = plug_in_negative_numbers_if_file_is_shorter_than_footer_len(filename, first_n_bytes, footer_matrix)
+	footer_matrix = plug_in_negative_numbers_if_file_is_shorter_than_header_len(filename, first_n_bytes, footer_matrix)
 	return(footer_matrix)	
 
 def plug_in_negative_numbers_if_file_is_shorter_than_header_len(filename,first_n_bytes,header_matrix):
@@ -228,10 +185,9 @@ def run_header_and_footer(type_name, list_of_filenames, bytes_to_check):
 	#prep filenames
 	header_FHT_filename_out = type_name + "_header_FHT"
 	footer_FHT_filename_out = type_name + "_footer_FHT"
-	#generate output files into those filenames
-	#one for header
+	# Generate output files into those filenames
+	# One for header and one for trailer
 	save_csv_for_each_byte_len(list_of_filenames, filename_out = header_FHT_filename_out, bytes_to_check=bytes_to_check, header_or_footer="header")
-	#one for footer
 	save_csv_for_each_byte_len(list_of_filenames, filename_out = footer_FHT_filename_out, bytes_to_check=bytes_to_check, header_or_footer="footer")
 
 
