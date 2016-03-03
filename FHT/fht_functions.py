@@ -123,14 +123,6 @@ def extract_n_footer_bytes_from_file(filename, number_of_bytes):
 	footer_bytes = bytes_backwards(filename, number_of_bytes) #Reverse the bytes so we can reuse the 
 	return(footer_bytes)
 
-def n_byte_headers_for_each_file(list_of_filenames, number_of_bytes):
-	header_byte_list = [extract_n_header_bytes_from_file(filename, number_of_bytes) for filename in list_of_filenames]
-	return(header_byte_list)
-
-def n_byte_footers_for_each_file(list_of_filenames, number_of_bytes):
-	footer_byte_list = [extract_n_footer_bytes_from_file(filename, number_of_bytes) for filename in list_of_filenames]
-	return(footer_byte_list)
-
 def zero_matrix_for_FHT(first_n_bytes):
 	return(np.zeros((first_n_bytes, 256), dtype=int))
 
@@ -145,6 +137,18 @@ def build_FHT_header_matrix(filename, first_n_bytes):
 		counter += 1
 	header_matrix = plug_in_negative_numbers_if_file_is_shorter_than_header_len(filename, first_n_bytes, header_matrix)
 	return(header_matrix)
+
+def build_FHT_footer_matrix(filename, first_n_bytes):
+	#Instantiated the matrix of zeros
+	header_matrix =  zero_matrix_for_FHT(first_n_bytes)
+	#Grab the file header bytes
+	file_footer_bytes = extract_n_footer_bytes_from_file(filename,first_n_bytes)
+	counter = 0
+	for byte_value in file_footer_bytes:
+		footer_matrix[counter,byte_value] = 1
+		counter += 1
+	footer_matrix = plug_in_negative_numbers_if_file_is_shorter_than_footer_len(filename, first_n_bytes, footer_matrix)
+	return(footer_matrix)	
 
 def plug_in_negative_numbers_if_file_is_shorter_than_header_len(filename,first_n_bytes,header_matrix):
 	if get_length_of_file_in_bytes(filename) >= first_n_bytes:
@@ -165,12 +169,15 @@ def concatenate_FP_matrices(old_FP_matrix, new_FP_matrix, previous_number_of_fil
 	return(concatenated_matrix)
 
 
-def concatenate_FP_matrix_from_filelist(filelist, num_bytes=8):
+def concatenate_FP_matrix_from_filelist(filelist, num_bytes=8, header_or_footer="NULL"):
 	# Instantiate the matrix for the initial FHT Matrix
 	variable_matrix = zero_matrix_for_FHT(num_bytes)
 	previous_number_of_files = 0
 	for file in filelist:
-		current_file_matrix = build_FHT_header_matrix(file,num_bytes)
+		if header_or_footer=="header":
+			current_file_matrix = build_FHT_header_matrix(file,num_bytes)
+		else:
+			current_file_matrix = build_FHT_footer_matrix(file, num_bytes)
 		variable_matrix = concatenate_FP_matrices(variable_matrix, current_file_matrix, previous_number_of_files)
 		previous_number_of_files += 1
 		print('files_remaining = ' + str(len(filelist) - previous_number_of_files))
@@ -213,7 +220,7 @@ class TestUM(unittest.TestCase):
 		return(concatenated_matrix)
 
 	def test_concatenate_FP_matrix_from_filelist(self):
-		res1 = concatenate_FP_matrix_from_filelist(test_file_list(), 4)
+		res1 = concatenate_FP_matrix_from_filelist(test_file_list(), 4, header_or_footer="header")
 		return(res1)
 
 
@@ -222,15 +229,17 @@ def run_header_and_footer(type_name, list_of_filenames, bytes_to_check):
 	header_FHT_filename_out = type_name + "_header_FHT"
 	footer_FHT_filename_out = type_name + "_footer_FHT"
 	#generate output files into those filenames
-	save_csv_for_each_byte_len(list_of_filenames, filename_out = header_FHT_filename_out, header_or_footer="header", bytes_to_check=bytes_to_check)
-	save_csv_for_each_byte_len(list_of_filenames, filename_out = footer_FHT_filename_out, header_or_footer="footer", bytes_to_check=bytes_to_check)
+	#one for header
+	save_csv_for_each_byte_len(list_of_filenames, filename_out = header_FHT_filename_out, bytes_to_check=bytes_to_check, header_or_footer="header")
+	#one for footer
+	save_csv_for_each_byte_len(list_of_filenames, filename_out = footer_FHT_filename_out, bytes_to_check=bytes_to_check, header_or_footer="footer")
 
 
 def save_csv_for_each_byte_len(list_of_filenames, filename_out, bytes_to_check, header_or_footer):
 	for i in bytes_to_check:
 		filename_with_bytes = filename_out + "bytelen" + str(i) + ".csv"
 		print("Working on: " + filename_with_bytes)
-		mat = concatenate_FP_matrix_from_filelist(list_of_filenames, i)
+		mat = concatenate_FP_matrix_from_filelist(list_of_filenames, i, header_or_footer)
 		np.savetxt(filename_with_bytes, mat, delimiter=",")
  
 
