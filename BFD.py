@@ -7,7 +7,7 @@ def initialize(fingerprint):
 # old_fingerprint : finger print of the mime type calculated from the training set data from BFA
 # new_fingerprint : byte map of the test data from BFA
 # returns the correlation computed from both parameters
-def cal_corelation(old_fingerprint, new_fingerprint):
+def calculateCorelationFactor(old_fingerprint, new_fingerprint):
     corelation = {}
     for i in range(0,256):
         corelation[i] = 0
@@ -17,14 +17,14 @@ def cal_corelation(old_fingerprint, new_fingerprint):
         corelation[i] = math.exp(-1*(math.pow(x,2))/(2*(math.pow(sigma,2))))
     return corelation
 
-# Update the correlation (add to average)
-def update_corelation(corelation,corelation1,file_count):
+#Update Correlation
+def updateCorelation(corelation,corelation1,file_count):
     for i in range(0,256):
         corelation1[i] = (corelation1[i]*file_count +corelation[i])/(file_count+1)
     return
 
-# Update the fingerprint (add to average)
-def update_fingerprint(old_fingerprint, fingerprint,file_count):
+#Update Fingerprint
+def updateFingerprint(old_fingerprint, fingerprint,file_count):
     for i in range(0,256):
         fingerprint[i] = (fingerprint[i]*file_count + old_fingerprint[i])/(file_count+1)
     return
@@ -51,7 +51,7 @@ def getBFD(fingerprint, listFiles):
     filecount = 0
     for file in listFiles:
         bytemap = readFile(file)
-        file_correlation = cal_corelation(fingerprint, bytemap)
-        update_corelation(file_correlation, corelation, filecount)
+        file_correlation = calculateCorelationFactor(fingerprint, bytemap)
+        updateCorelation(file_correlation, corelation, filecount)
         filecount += 1
     return correlation
