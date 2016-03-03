@@ -229,7 +229,8 @@ def generate_csv_FHT_matrix(list_of_filenames, header_or_footer, filename_out, b
 	if header_or_footer=="header":
 		save_csv_for_each_byte_len(list_of_filenames, filename_out, bytes_to_check)
 	elif header_or_footer=="footer":
-		save_csv_for_each_byte_len(list_of_filenames, filename_out, bytes_to_check)
+		#TODO implement footer RUN
+		# save_csv_for_each_byte_len(list_of_filenames, filename_out, bytes_to_check)
 	else:
 		print(1)
 
