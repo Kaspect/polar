@@ -3,7 +3,7 @@
 
 import sys, argparse, json
 import os
-
+import ipdb
 import numpy as np
 import matplotlib.pyplot as plt
 # http://stackoverflow.com/questions/1035340/reading-binary-file-in-python-and-looping-over-each-byte
@@ -26,11 +26,13 @@ def test_file_list():
 				"test_img_files/one_byte.jpg",
 				"test_img_files/five_bytes.jpg",
 				"test_img_files/nine_bytes.jpg",
-				"test_img_files/eighteen_bytes.jpg"]
+				"test_img_files/eighteen_bytes.jpg"
+				]
 				)
 def read_file_list(file_list_path="default_file_list"):
-	list = [str(x).rstrip('\n') for x in open(file_list_path,'r')]
-	return(list)
+	L = [str(x).rstrip('\n') for x in open(file_list_path,'r')]
+	# ipdb.set_trace()
+	return(L)
 
 def gen_expected_distribution_for_one_byte_b():
 	neg1_list = np.ones(256)*-1
@@ -217,5 +219,6 @@ if __name__ == '__main__':
 	# unittest.main()
 	print('Unit tests complete')
 	#replace test_file_list with a list of the files. strings
-	run_header_and_footer("jpg", test_file_list(), bytes_to_check = [4,8,16] )
-	# run_header_and_footer("filename_for_group_of_files", read_file_list("path_to_list_of_files"), bytes_to_check = [4,8,16] )
+	# run_header_and_footer("jpg", test_file_list(), bytes_to_check = [4,8,16] )
+	files = read_file_list("default_file_list")
+	run_header_and_footer("image-jpg", files, bytes_to_check = [4,8,16] )
