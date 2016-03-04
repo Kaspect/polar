@@ -215,6 +215,7 @@ def read_first_n_bytes(filename, num_bytes):
 
 if __name__ == '__main__':
 	# unittest.main()
+	print('Unit tests complete')
 	#replace test_file_list with a list of the files. strings
 	run_header_and_footer("jpg", test_file_list(), bytes_to_check = [4,8,16] )
-	run_header_and_footer("filename_for_group_of_files", read_file_list("path_to_list_of_files"), bytes_to_check = [4,8,16] )
+	# run_header_and_footer("filename_for_group_of_files", read_file_list("path_to_list_of_files"), bytes_to_check = [4,8,16] )
