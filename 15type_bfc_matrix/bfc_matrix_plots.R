@@ -1,3 +1,4 @@
+#run with RScript bfc_matrix_plots.r
 pdf("bfc_output.pdf", height=20, width=20)
 par(mfrow=c(4,4))
 image(as.matrix(read.csv("application_atom+xml_bfc_matrix.csv", header=FALSE)), main="hi")
