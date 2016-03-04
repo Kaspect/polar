@@ -19,9 +19,12 @@ Instructions:
 
 #How to see our visualizations:
 run `python -m http.server` in the main folder after cloning the repository to your local computer.
-BFA:
+#Mime Types
+`http://localhost:8000/mime_types_we_chose/MIME_types.html`
+
+#BFA:
 `http://localhost:8000/BFA_Dhruv/d3_histograms/`
-BFD:
+#BFD:
 `http://localhost:8000/bfd_json/atomXML.html` , as well as 
 ```
 atomXML.html
@@ -32,7 +35,7 @@ rdfxml.html
 rssxml.html
 xhtmlXML.html
 ```
-Mime Types that we chose in a barplot
+#Mime Types that we chose in a barplot
 `http://localhost:8000/mime_types_we_chose/`
 
 
